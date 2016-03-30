@@ -1,0 +1,23 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         version="2.5"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <servlet>
+    <servlet-name>ServletAdaptor</servlet-name>
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>   
+    <!--Jersey will check the given package after resources-->
+    <init-param>
+        <param-name>jersey.config.server.provider.packages</param-name>
+        <param-value>de.zell.texpad.resources</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <!--
+  <listener>
+        <listener-class>de.tel.moccha.util.ServiceDestroyListener</listener-class>
+  </listener>-->
+  <servlet-mapping>
+    <servlet-name>ServletAdaptor</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+</web-app>
