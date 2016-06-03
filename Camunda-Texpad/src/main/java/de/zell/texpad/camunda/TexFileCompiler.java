@@ -5,10 +5,8 @@
  */
 package de.zell.texpad.camunda;
 
-import static de.zell.texpad.camunda.TexpadConstants.VAR_KEY_TEX_FILE;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.UUID;
@@ -16,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import static de.zell.texpad.camunda.TexpadConstants.VAR_KEY_TEX_CONTENT;
 
 /**
  * Compiles the given .tex file and creates a PDF resource.
@@ -35,7 +34,7 @@ public class TexFileCompiler implements JavaDelegate {
 
   public void execute(DelegateExecution execution) throws Exception {
 
-    Object varTexFile = execution.getVariable(VAR_KEY_TEX_FILE);
+    Object varTexFile = execution.getVariable(VAR_KEY_TEX_CONTENT);
     if (varTexFile != null) {
       //create tmp .tex file
       UUID uuid = UUID.randomUUID();

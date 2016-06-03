@@ -5,7 +5,6 @@
  */
 package de.zell.texpad.camunda;
 
-import static de.zell.texpad.camunda.TexpadConstants.VAR_KEY_TEX_FILE;
 import static de.zell.texpad.camunda.TexpadConstants.VAR_KEY_VALID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import static de.zell.texpad.camunda.TexpadConstants.VAR_KEY_TEX_CONTENT;
 
 /**
  * Validates the given tex file.
@@ -33,7 +33,7 @@ public class TexFileValidator implements JavaDelegate {
   private final static Logger LOGGER = Logger.getLogger(TexFileValidator.class.getName());
 
   public void execute(DelegateExecution execution) throws Exception {
-    Object varTexFile = execution.getVariable(VAR_KEY_TEX_FILE);
+    Object varTexFile = execution.getVariable(VAR_KEY_TEX_CONTENT);
     Boolean valid = Boolean.FALSE;
     if (varTexFile != null) {
       valid = validateTex(varTexFile.toString());
