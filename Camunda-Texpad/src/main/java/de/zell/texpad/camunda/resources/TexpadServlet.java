@@ -5,36 +5,50 @@
  */
 package de.zell.texpad.camunda.resources;
 
-import java.util.logging.Level;
+import de.zell.texpad.camunda.entities.TexEntity;
 import java.util.logging.Logger;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import org.camunda.bpm.BpmPlatform;
 import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
 
 
 /**
  *
  * @author Christopher Zell <christopher.zell@camunda.com>
  */
-@Path("/Texpad")
+@Path(TexpadServlet.PROC_DEF_KEY)
 public class TexpadServlet {
 
+  public static final String PROC_DEF_KEY = "Texpad";
   private final UriBuilder builder = UriBuilder.fromResource(TexpadServlet.class);
   private static final Logger LOGGER = Logger.getLogger(TexpadServlet.class.getName());
 
   @POST
-  public Response buildTexFile() {
-    ProcessEngine engine = BpmPlatform.getProcessEngineService().getDefaultProcessEngine();
-    LOGGER.log(Level.INFO, "Get ENGINE");
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response buildTexFile(TexEntity entity) {
 
-    ProcessDefinition processDefinition = engine.getRepositoryService().createProcessDefinitionQuery().processDefinitionKey("Texpad").singleResult();
-    engine.getRuntimeService().startProcessInstanceById(processDefinition.getId());
 
+    startProcessInstance(entity);
     return Response.created(builder.clone().path("").build()).build();
+  }
+
+
+  private void startProcessInstance(TexEntity entity) {
+    ProcessEngine engine = BpmPlatform.getProcessEngineService().getDefaultProcessEngine();
+    if (engine == null)
+      throw new InternalServerErrorException("No process engine available!");
+
+//    ProcessDefinition processDefinition = engine.getRepositoryService().createProcessDefinitionQuery().processDefinitionKey(PROC_DEF_KEY).singleResult();
+    ProcessInstance instance = engine.getRuntimeService().startProcessInstanceByKey(PROC_DEF_KEY, entity.getAttributes());
   }
 
 }
